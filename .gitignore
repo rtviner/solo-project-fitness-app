@@ -7,3 +7,6 @@ node_modules/
 
 # output from webpack
 build/
+
+#environment variables
+.env
