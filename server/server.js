@@ -14,15 +14,14 @@ app.use(express.json());
 // SETUP ROUTES
 
 // get root
-
 app.get('/', (req, res) => {
   // render main app or login page?
 });
 
 // if a new user signs in, create a new user 
 app.post('/signup', userController.createUser, (req, res) => {
+  res.status(200).json(res.locals.user);
   // go to sessions page...
-
 });
 
 // look up all sessions by user_id (just have 1 user to start (user_id = 1))
@@ -36,6 +35,9 @@ app.get('/session', sessionController.getSessionByDate, (req, res) => {
 });
 
 // create a new session
+app.post('/session', sessionController.addSession, (req, res) => {
+  res.status(200).json(res.locals.session)
+})
 
 
 // error handler for unknown route
@@ -43,6 +45,7 @@ app.use((req, res) => res.sendStatus(404));
 
 //global error handler
 app.use((err, req, res, next) => {
+  console.log("err recieved: ", err);
   const defaultErr = {
     log: 'Express error handler caught unknown middleware error',
     status: 400,
