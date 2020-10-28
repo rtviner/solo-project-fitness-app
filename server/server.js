@@ -16,6 +16,7 @@ app.use(express.json());
 // get root
 app.get('/', (req, res) => {
   // render main app or login page?
+  res.status(200).send("Hompeage found");
 });
 
 // if a new user signs in, create a new user 
@@ -26,17 +27,19 @@ app.post('/signup', userController.createUser, (req, res) => {
 
 // look up all sessions by user_id (just have 1 user to start (user_id = 1))
 app.get('/sessions/:id', sessionController.getAllSessions, (req, res) => {
-
+  // return json response (list of all session objects)
+  res.status(200).json(res.locals.sessions);
 });
 
 // look up a specific session with date and user_id (user_id = 1)
 app.get('/session', sessionController.getSessionByDate, (req, res) => {
-
+  res.status(200).json(res.locals.session);
 });
 
 // create a new session
 app.post('/session', sessionController.addSession, (req, res) => {
   res.status(200).json(res.locals.session)
+  // go to sessions page...
 })
 
 
