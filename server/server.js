@@ -26,12 +26,14 @@ app.post('/signup', userController.createUser, (req, res) => {
 });
 
 // look up all sessions by user_id (just have 1 user to start (user_id = 1))
-app.get('/sessions', sessionController.getAllSessions, (req, res) => {
+app.get('/sessions/:id', sessionController.getAllSessions, (req, res) => {
 
 });
 
 // look up a specific session with date and user_id (user_id = 1)
-app.get('/session')
+app.get('/session', sessionController.getSessionByDate, (req, res) => {
+
+});
 
 // create a new session
 
