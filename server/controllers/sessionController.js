@@ -5,7 +5,7 @@ const sessionController = {};
 
 sessionController.getAllSessions = (req, res, next) => {
   // select all sessions for a specific user and return array of json objects as response?
-  let id = req.params.id; 
+  const { id } = req.params; 
   // select all sessions where user_id = id
   const allSessionsQuery = `
     SELECT * 
@@ -25,7 +25,26 @@ sessionController.getAllSessions = (req, res, next) => {
 }
 
 sessionController.getSessionByDate = (req, res, next) => {
-  next()
+  // user id is req.params.id
+  const { id } = req.params;
+  // date is req.query.date
+  const { date } = req.query;
+  const sessionByDate = `
+    SELECT * 
+    FROM sessions 
+    WHERE user_id = $1 AND completed_on = $2`;
+  const values = [id, date];
+
+  db.query(sessionByDate, values)
+    .then((data) => {
+      console.log("data received: ", data.rows);
+      res.locals.session = data.rows;
+      return next()
+    })
+    .catch((err) => {
+      return next({err});
+    });
+    
 }
 
 sessionController.addSession = (req, res, next) => { 
