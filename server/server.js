@@ -25,7 +25,7 @@ app.get('/', (req, res) => {
 });
 
 // if a new user signs in, create a new user 
-app.post('/signup', userController.createUser, cookieController.startCookieSession, cookieController.setSSIDcookie, (req, res) => {
+app.post('/signup', userController.createUser, cookieController.setSSIDcookie, cookieController.startCookieSession, (req, res) => {
   res.status(200).json(res.locals.user);
   // go to sessions page...
 });
@@ -33,8 +33,11 @@ app.post('/signup', userController.createUser, cookieController.startCookieSessi
 app.post('/login', userController.verifyUser, cookieController.setSSIDcookie, cookieController.startCookieSession, (req, res) => {
   res.status(200).json(res.locals.user);
   // go to sessions page...
-})
+});
 
+app.post('/logout', cookieController.deleteCookieSession, (req, res) => {
+  res.status(200).send("Logged out of session.");
+});
 
 /** Must be authorized to go to these routes, check cookies... */
 // look up all sessions by user_id (just have 1 user to start (user_id = 1)
