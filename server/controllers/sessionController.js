@@ -53,8 +53,9 @@ sessionController.addSession = (req, res, next) => {
     VALUES ($1,$2,$3,$4)
     RETURNING session_id`;
 
-  const { completed_on, exercises, notes, user_id } = req.body;
-  const sessionValues = [completed_on, exercises, notes, user_id];
+  const { completed_on, exercises, notes } = req.body;
+  const { id } = req.params;
+  const sessionValues = [completed_on, exercises, notes, id];
 
   db.query(newSessionQuery, sessionValues)
     .then((data) => {
