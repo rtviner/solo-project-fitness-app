@@ -21,14 +21,13 @@ userController.createUser = (req, res, next) => {
       return next();
     })
     .catch((err) => {
-      console.log("global error handler will be called");
       return next({err});
     })
 }
 
 // make sure username and password from req.body match those found in the db at that username...
 userController.verifyUser = (req, res, next) => {
-  next();
+  return next();
 }
 
 module.exports = userController;
