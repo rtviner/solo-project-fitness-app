@@ -62,6 +62,8 @@ cookieController.verifySession = (req, res, next) => {
 
   db.query(cookieById, values)
     .then((data) => {
+      console.log("data received: ", data.rows);
+      console.log("req cookies:", req.cookies.ssid);
       // if no cookie session or cookie_id does not match req.cookies.ssid redirect to get signup route
       if (!data.rows.length || data.rows[0].cookie_id !== req.cookies.ssid) {
         return res.status(400).redirect('/');
