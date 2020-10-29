@@ -22,7 +22,7 @@ sessionController.getAllSessions = (req, res, next) => {
     .catch((err) => {
       return next({err});
     })
-}
+};
 
 sessionController.getSessionByDate = (req, res, next) => {
   // user id is req.params.id
@@ -44,8 +44,7 @@ sessionController.getSessionByDate = (req, res, next) => {
     .catch((err) => {
       return next({err});
     });
-    
-}
+};
 
 sessionController.addSession = (req, res, next) => { 
   const newSessionQuery = `
