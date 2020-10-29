@@ -1,15 +1,23 @@
 const express = require('express');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+// create the server
 const app = express();
+
+
 const PORT = 3000;
 
 const path = require('path');
+const cookieController = require('./controllers/cookieController');
 const sessionController = require('./controllers/sessionController');
 const userController = require('./controllers/userController');
 
 // parse request body
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
-
+//parse cookies in request body
+app.use(cookieParser());
+app.use(session({secret: "secret"}));
 
 // SETUP ROUTES
 
@@ -20,19 +28,28 @@ app.get('/', (req, res) => {
 });
 
 // if a new user signs in, create a new user 
-app.post('/signup', userController.createUser, (req, res) => {
+app.post('/signup', userController.createUser, cookieController.setSSIDCookie, cookieController.startSesion, (req, res) => {
   res.status(200).json(res.locals.user);
-  // go to sessions page...
+  // go to sessions/:id page...
 });
 
+// if a user signs in, verify the username and password, start a new session for user
+app.post('login', userController.verifyUser, cookieController.setSSIDCookie, cookieController.startSesion, (req, res) => {
+  res.status(200).json(res.locals.user);
+  // go to sessions/:id page...
+});
+
+/**
+ * Need to check if users are loggin in for all these get routes???
+ */
 // look up all sessions by user_id (just have 1 user to start (user_id = 1))
 app.get('/sessions/:id', sessionController.getAllSessions, (req, res) => {
   // return json response (list of all session objects)
   res.status(200).json(res.locals.sessions);
 });
 
-// look up a specific session with date and user_id (user_id = 1)
-app.get('/session', sessionController.getSessionByDate, (req, res) => {
+// look up a specific session with date and user_id as req.queries?(user_id = 1)
+app.get('/session/:id', sessionController.getSessionByDate, (req, res) => {
   res.status(200).json(res.locals.session);
 });
 
