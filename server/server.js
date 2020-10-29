@@ -21,7 +21,7 @@ app.use(cookieParser());
 // get root
 app.get('/', (req, res) => {
   // render main app or login page?
-  res.status(200).send("Homepage found");
+  res.status(200).sendFile(path.join(__dirname, '../index.html'));
 });
 
 // if a new user signs in, create a new user 
@@ -36,7 +36,7 @@ app.post('/login', userController.verifyUser, cookieController.setSSIDcookie, co
 });
 
 app.post('/logout', cookieController.deleteCookieSession, (req, res) => {
-  res.status(200).send("Logged out of session.");
+  res.status(200).send('Logged out of session.');
 });
 
 /** Must be authorized to go to these routes, check cookies... */
@@ -56,7 +56,8 @@ app.post('/session/:id', cookieController.verifySession, sessionController.addSe
   res.status(200).json(res.locals.session)
   // go to sessions page...
 })
-
+// serve everything in the build folder
+app.use('/build', express.static(path.join(__dirname, '../build')));
 
 // error handler for unknown route
 app.use((req, res) => res.sendStatus(404));
