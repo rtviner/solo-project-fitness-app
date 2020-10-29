@@ -2,9 +2,14 @@ const express = require('express');
 const app = express();
 const PORT = 3000;
 
+const cookieParser = require('cookie-parser');
+
 const path = require('path');
+
+
 const sessionController = require('./controllers/sessionController');
 const userController = require('./controllers/userController');
+const cookieController = require('./controllers/cookieController');
 
 // parse request body
 app.use(express.urlencoded({extended: false}));
@@ -16,28 +21,35 @@ app.use(express.json());
 // get root
 app.get('/', (req, res) => {
   // render main app or login page?
-  res.status(200).send("Hompeage found");
+  res.status(200).send("Homepage found");
 });
 
 // if a new user signs in, create a new user 
-app.post('/signup', userController.createUser, (req, res) => {
+app.post('/signup', userController.createUser, cookieController.startCookieSession, cookieController.setSSIDcookie, (req, res) => {
   res.status(200).json(res.locals.user);
   // go to sessions page...
 });
 
-// look up all sessions by user_id (just have 1 user to start (user_id = 1))
-app.get('/sessions/:id', sessionController.getAllSessions, (req, res) => {
+app.post('/login', userController.verifyUser, cookieController.setSSIDcookie, cookieController.startCookieSession, (req, res) => {
+  res.status(200).json(res.locals.user);
+  // go to sessions page...
+})
+
+
+/** Must be authorized to go to these routes, check cookies... */
+// look up all sessions by user_id (just have 1 user to start (user_id = 1)
+app.get('/sessions/:id', sessionController.getAllSessions, cookieController.verifySession, (req, res) => {
   // return json response (list of all session objects)
   res.status(200).json(res.locals.sessions);
 });
 
 // look up a specific session with date and user_id (user_id = 1)
-app.get('/session', sessionController.getSessionByDate, (req, res) => {
+app.get('/session', sessionController.getSessionByDate, cookieController.verifySession, (req, res) => {
   res.status(200).json(res.locals.session);
 });
 
 // create a new session
-app.post('/session', sessionController.addSession, (req, res) => {
+app.post('/session', sessionController.addSession, cookieController.verifySession, (req, res) => {
   res.status(200).json(res.locals.session)
   // go to sessions page...
 })
