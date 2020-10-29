@@ -6,7 +6,7 @@ cookieController.setSSIDcookie = (req, res, next) => {
   // create a new browser cookie with ssid value set to res.locals.user
   const { user } = res.locals;
   res.cookie('ssid', user, { httpOnly: true });
-  console.log("Cookie created successfully: ", res.cookie.ssid);
+  console.log("Cookie created successfully.");
   return next();
 };
 
