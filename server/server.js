@@ -41,18 +41,18 @@ app.post('/logout', cookieController.deleteCookieSession, (req, res) => {
 
 /** Must be authorized to go to these routes, check cookies... */
 // look up all sessions by user_id (just have 1 user to start (user_id = 1)
-app.get('/sessions/:id', sessionController.getAllSessions, cookieController.verifySession, (req, res) => {
+app.get('/sessions/:id', cookieController.verifySession, sessionController.getAllSessions, (req, res) => {
   // return json response (list of all session objects)
   res.status(200).json(res.locals.sessions);
 });
 
 // look up a specific session with date and user_id (user_id = 1)
-app.get('/session', sessionController.getSessionByDate, cookieController.verifySession, (req, res) => {
+app.get('/session/:id', cookieController.verifySession, sessionController.getSessionByDate,  (req, res) => {
   res.status(200).json(res.locals.session);
 });
 
 // create a new session
-app.post('/session', sessionController.addSession, cookieController.verifySession, (req, res) => {
+app.post('/session/:id', cookieController.verifySession, sessionController.addSession, (req, res) => {
   res.status(200).json(res.locals.session)
   // go to sessions page...
 })
