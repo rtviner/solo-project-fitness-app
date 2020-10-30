@@ -3,9 +3,10 @@ const app = express();
 const PORT = 3000;
 
 const cookieParser = require('cookie-parser');
-
+const cors = require('cors');
 const path = require('path');
 
+app.use(cors());
 
 const sessionController = require('./controllers/sessionController');
 const userController = require('./controllers/userController');
@@ -18,19 +19,13 @@ app.use(cookieParser());
 
 // SETUP ROUTES
 
-// get root
-app.get('/', (req, res) => {
-  // render main app or login page?
-  res.status(200).sendFile(path.join(__dirname, '../index.html'));
-});
-
 // if a new user signs in, create a new user 
-app.post('/signup', userController.createUser, cookieController.setSSIDcookie, cookieController.startCookieSession, (req, res) => {
+app.post('/signup', userController.createUser, cookieController.startCookieSession, cookieController.setSSIDcookie, (req, res) => {
   res.status(200).json(res.locals.user);
   // go to sessions page...
 });
 
-app.post('/login', userController.verifyUser, cookieController.setSSIDcookie, cookieController.startCookieSession, (req, res) => {
+app.post('/login', userController.verifyUser, cookieController.startCookieSession, cookieController.setSSIDcookie, (req, res) => {
   res.status(200).json(res.locals.user);
   // go to sessions page...
 });
@@ -56,9 +51,6 @@ app.post('/session/:id', cookieController.verifySession, sessionController.addSe
   res.status(200).json(res.locals.session)
   // go to sessions page...
 })
-// serve everything in the build folder
-app.use('/build', express.static(path.join(__dirname, '../build')));
-
 // error handler for unknown route
 app.use((req, res) => res.sendStatus(404));
 
@@ -75,6 +67,15 @@ app.use((err, req, res, next) => {
   return res.status(errorObj.status).json(errorObj.message);
 })
 
+if (process.env.NODE_ENV === "production") {
+  // serve everything in the build folder
+  app.use('/build', express.static(path.join(__dirname, '../build')));
+  // get root
+  app.get('/', (req, res) => {
+    // render main app or login page?
+    res.status(200).sendFile(path.join(__dirname, '../index.html'));
+  });
+};
 // start server
 app.listen(PORT, () => {
   console.log(`Server is listening on port: ${PORT}`);
