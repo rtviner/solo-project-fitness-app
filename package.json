@@ -4,9 +4,9 @@
   "description": "",
   "private": true,
   "scripts": {
-    "start": "nodemon server/server.js",
-    "build": "webpack",
-    "dev": "webpack serve"
+    "start": "NODE_ENV='production' nodemon server/server.js",
+    "build": "NODE_ENV='production' webpack",
+    "dev": "concurrently \"NODE_ENV='development' webpack serve\" \"nodemon server/server.js\""
   },
   "nodemonConfig": {
     "ignore": [
@@ -29,6 +29,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
     "css-loader": "^5.0.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
